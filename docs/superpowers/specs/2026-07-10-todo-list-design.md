@@ -175,6 +175,7 @@ Quando a tela tem estados visuais distintos (lista vazia vs. com itens, tarefa c
 | `room-runtime` + `room-ktx` | Banco de dados local |
 | `room-compiler` (via KSP) | Geração de código das anotações Room |
 | `navigation-compose` | NavHost e NavController |
+| `material-icons-core` | Fornece `Icons.Default.Add/Delete` e `Icons.AutoMirrored.Filled.ArrowBack` |
 | `lifecycle-viewmodel-compose` | `viewModel()` em Composables |
 | Plugin KSP | Processador de anotações do Room |
 

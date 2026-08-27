@@ -94,3 +94,19 @@ Luca Oliveira
 ## Licença
 
 Este projeto é distribuído sob a licença MIT.
+
+## Evidências
+
+![Lista inicial](docs/evidencias/1%20-Tela-inicial-com-a-lista-de-tarefas-em-execução.png)
+
+![Formulário de cadastro](docs/evidencias/2%20-%20Cadastro%20de%20uma%20nova%20tarefa.png)
+
+![Tarefa cadastrada](docs/evidencias/3%20-%20Tarefa%20cadastrada%20aparecendo%20na%20lista.png)
+
+![Edição de tarefa](docs/evidencias/4%20-%20Edição%20de%20uma%20tarefa%20existente.png)
+
+![Tarefa concluída](docs/evidencias/5%20-%20Tarefa%20marcada%20como%20concluída.png)
+
+![Exclusão de tarefa](docs/evidencias/6%20-%20Exclusão%20de%20uma%20tarefa.png)
+
+![Navegação](docs/evidencias/7%20-%20Navegação%20entre%20a%20lista%20e%20o%20formulário.png)

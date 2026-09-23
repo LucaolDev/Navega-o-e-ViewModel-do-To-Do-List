@@ -35,3 +35,7 @@ fun combinarDataHora(ano: Int, mes: Int, dia: Int, hora: Int, minuto: Int): Long
     calendario.set(ano, mes, dia, hora, minuto)
     return calendario.timeInMillis
 }
+
+fun tarefaAtrasada(dataHora: Long?, concluida: Boolean, agora: Long = System.currentTimeMillis()): Boolean {
+    return dataHora != null && !concluida && dataHora < agora
+}

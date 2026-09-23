@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import carreiras.com.github.todolist.data.Tarefa
 import carreiras.com.github.todolist.util.formatarDataHora
+import carreiras.com.github.todolist.util.tarefaAtrasada
 import carreiras.com.github.todolist.viewmodel.TarefaViewModel
 
 @Composable
@@ -145,7 +146,7 @@ private fun TarefaItem(
                     )
                 }
                 if (tarefa.dataHora != null) {
-                    val atrasada = tarefa.dataHora < System.currentTimeMillis() && !tarefa.concluida
+                    val atrasada = tarefaAtrasada(tarefa.dataHora, tarefa.concluida)
                     Text(
                         text = formatarDataHora(tarefa.dataHora),
                         style = MaterialTheme.typography.bodySmall,

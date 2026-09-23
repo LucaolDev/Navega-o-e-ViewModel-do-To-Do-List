@@ -53,4 +53,14 @@ class DataHoraUtilTest {
         assertEquals(14, calendario.get(Calendar.HOUR_OF_DAY))
         assertEquals(30, calendario.get(Calendar.MINUTE))
     }
+
+    @Test
+    fun tarefaAtrasadaRetornaVerdadeiroApenasQuandoExpirouEContinuaPendente() {
+        val agora = 1_700_000_000_000L
+
+        assertEquals(true, tarefaAtrasada(agora - 60_000L, concluida = false, agora = agora))
+        assertEquals(false, tarefaAtrasada(agora + 60_000L, concluida = false, agora = agora))
+        assertEquals(false, tarefaAtrasada(agora - 60_000L, concluida = true, agora = agora))
+        assertEquals(false, tarefaAtrasada(null, concluida = false, agora = agora))
+    }
 }

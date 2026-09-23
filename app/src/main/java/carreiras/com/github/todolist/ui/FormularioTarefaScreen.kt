@@ -276,19 +276,40 @@ fun FormularioTarefaContent(
                     style = MaterialTheme.typography.bodySmall
                 )
             }
-            Button(
-                onClick = {
-                    val dataHora = if (temDataHora) {
-                        combinarDataHora(ano!!, mes!!, dia!!, hora!!, minuto!!)
-                    } else {
-                        null
-                    }
-                    onSalvar(titulo.trim(), descricao.trim(), dataHora)
-                },
+            Row(
                 modifier = Modifier.fillMaxWidth(),
-                enabled = tituloValido && prazoValido
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Text("Salvar")
+                OutlinedButton(
+                    onClick = {
+                        titulo = ""
+                        descricao = ""
+                        temDataHora = false
+                        ano = null
+                        mes = null
+                        dia = null
+                        hora = null
+                        minuto = null
+                    },
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text("Limpar")
+                }
+
+                Button(
+                    onClick = {
+                        val dataHora = if (temDataHora) {
+                            combinarDataHora(ano!!, mes!!, dia!!, hora!!, minuto!!)
+                        } else {
+                            null
+                        }
+                        onSalvar(titulo.trim(), descricao.trim(), dataHora)
+                    },
+                    modifier = Modifier.weight(1f),
+                    enabled = tituloValido && prazoValido
+                ) {
+                    Text("Salvar")
+                }
             }
         }
     }

@@ -311,6 +311,13 @@ private fun TarefaItem(
                     style = MaterialTheme.typography.titleMedium,
                     textDecoration = if (tarefa.concluida) TextDecoration.LineThrough else TextDecoration.None
                 )
+
+                Text(
+                    text = if (tarefa.concluida) "Concluída" else "Pendente",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = if (tarefa.concluida) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+                )
+
                 if (tarefa.descricao.isNotBlank()) {
                     Text(
                         text = tarefa.descricao,

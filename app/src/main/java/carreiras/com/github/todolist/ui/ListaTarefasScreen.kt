@@ -57,6 +57,11 @@ private enum class FiltroListaTarefas {
     CONCLUIDAS
 }
 
+private enum class OrdemListaTarefas {
+    PRAZO,
+    RECENTES
+}
+
 @Composable
 fun ListaTarefasScreen(
     viewModel: TarefaViewModel,
@@ -86,6 +91,7 @@ fun ListaTarefasContent(
     onDeletar: (Tarefa) -> Unit
 ) {
     var filtro by remember { mutableStateOf(FiltroListaTarefas.TODAS) }
+    var ordem by remember { mutableStateOf(OrdemListaTarefas.PRAZO) }
     var pesquisa by remember { mutableStateOf("") }
     var tarefaParaExcluir by remember { mutableStateOf<Tarefa?>(null) }
     val tarefasFiltradas = remember(tarefas, filtro, pesquisa) {
@@ -103,6 +109,16 @@ fun ListaTarefasContent(
                 tarefa.titulo.lowercase().contains(termo) ||
                     tarefa.descricao.lowercase().contains(termo)
             }
+        }
+    }
+    val tarefasOrdenadas = remember(tarefasFiltradas, ordem) {
+        when (ordem) {
+            OrdemListaTarefas.PRAZO -> tarefasFiltradas.sortedWith(
+                compareBy<Tarefa> { it.dataHora == null }
+                    .thenBy { it.dataHora ?: Long.MAX_VALUE }
+                    .thenByDescending { it.dataCriacao }
+            )
+            OrdemListaTarefas.RECENTES -> tarefasFiltradas.sortedByDescending { it.dataCriacao }
         }
     }
     val totalPendentes = tarefas.count { !it.concluida }
@@ -190,7 +206,29 @@ fun ListaTarefasContent(
                 }
             }
 
-            if (tarefasFiltradas.isEmpty()) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 4.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                OrdemListaTarefas.values().forEach { opcao ->
+                    FilterChip(
+                        selected = ordem == opcao,
+                        onClick = { ordem = opcao },
+                        label = {
+                            Text(
+                                text = when (opcao) {
+                                    OrdemListaTarefas.PRAZO -> "Prazo"
+                                    OrdemListaTarefas.RECENTES -> "Recentes"
+                                }
+                            )
+                        }
+                    )
+                }
+            }
+
+            if (tarefasOrdenadas.isEmpty()) {
                 Box(
                     modifier = Modifier
                         .fillMaxSize(),
@@ -205,7 +243,7 @@ fun ListaTarefasContent(
                     contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    items(tarefasFiltradas, key = { it.id }) { tarefa ->
+                    items(tarefasOrdenadas, key = { it.id }) { tarefa ->
                         TarefaItem(
                             tarefa = tarefa,
                             onCheckedChange = { concluida -> onCheckedChange(tarefa, concluida) },

@@ -88,6 +88,8 @@ fun ListaTarefasContent(
             FiltroListaTarefas.CONCLUIDAS -> tarefas.filter { it.concluida }
         }
     }
+    val totalPendentes = tarefas.count { !it.concluida }
+    val totalConcluidas = tarefas.count { it.concluida }
 
     Scaffold(
         topBar = {
@@ -104,10 +106,16 @@ fun ListaTarefasContent(
                 .fillMaxSize()
                 .padding(padding)
         ) {
+            Text(
+                text = "${tarefas.size} tarefas • ${totalPendentes} pendentes • ${totalConcluidas} concluídas",
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                style = MaterialTheme.typography.bodyMedium
+            )
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                    .padding(horizontal = 16.dp, vertical = 4.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 FiltroListaTarefas.values().forEach { opcao ->

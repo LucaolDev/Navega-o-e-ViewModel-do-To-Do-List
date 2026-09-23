@@ -24,6 +24,7 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -82,11 +83,22 @@ fun ListaTarefasContent(
     onDeletar: (Tarefa) -> Unit
 ) {
     var filtro by remember { mutableStateOf(FiltroListaTarefas.TODAS) }
-    val tarefasFiltradas = remember(tarefas, filtro) {
-        when (filtro) {
+    var pesquisa by remember { mutableStateOf("") }
+    val tarefasFiltradas = remember(tarefas, filtro, pesquisa) {
+        val base = when (filtro) {
             FiltroListaTarefas.TODAS -> tarefas
             FiltroListaTarefas.PENDENTES -> tarefas.filter { !it.concluida }
             FiltroListaTarefas.CONCLUIDAS -> tarefas.filter { it.concluida }
+        }
+
+        if (pesquisa.isBlank()) {
+            base
+        } else {
+            val termo = pesquisa.trim().lowercase()
+            base.filter { tarefa ->
+                tarefa.titulo.lowercase().contains(termo) ||
+                    tarefa.descricao.lowercase().contains(termo)
+            }
         }
     }
     val totalPendentes = tarefas.count { !it.concluida }
@@ -111,6 +123,16 @@ fun ListaTarefasContent(
                 text = "${tarefas.size} tarefas • ${totalPendentes} pendentes • ${totalConcluidas} concluídas",
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                 style = MaterialTheme.typography.bodyMedium
+            )
+
+            OutlinedTextField(
+                value = pesquisa,
+                onValueChange = { pesquisa = it },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 4.dp),
+                singleLine = true,
+                placeholder = { Text("Buscar tarefa") }
             )
 
             Row(

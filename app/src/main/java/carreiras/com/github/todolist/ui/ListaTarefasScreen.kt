@@ -19,6 +19,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -28,6 +29,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -41,6 +45,12 @@ import carreiras.com.github.todolist.data.Tarefa
 import carreiras.com.github.todolist.util.formatarDataHora
 import carreiras.com.github.todolist.util.tarefaAtrasada
 import carreiras.com.github.todolist.viewmodel.TarefaViewModel
+
+private enum class FiltroListaTarefas {
+    TODAS,
+    PENDENTES,
+    CONCLUIDAS
+}
 
 @Composable
 fun ListaTarefasScreen(
@@ -70,6 +80,15 @@ fun ListaTarefasContent(
     onCheckedChange: (Tarefa, Boolean) -> Unit,
     onDeletar: (Tarefa) -> Unit
 ) {
+    var filtro by remember { mutableStateOf(FiltroListaTarefas.TODAS) }
+    val tarefasFiltradas = remember(tarefas, filtro) {
+        when (filtro) {
+            FiltroListaTarefas.TODAS -> tarefas
+            FiltroListaTarefas.PENDENTES -> tarefas.filter { !it.concluida }
+            FiltroListaTarefas.CONCLUIDAS -> tarefas.filter { it.concluida }
+        }
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(title = { Text("Minhas Tarefas") })
@@ -80,30 +99,57 @@ fun ListaTarefasContent(
             }
         }
     ) { padding ->
-        if (tarefas.isEmpty()) {
-            Box(
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+        ) {
+            Row(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(padding),
-                contentAlignment = Alignment.Center
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Text("Nenhuma tarefa cadastrada.")
-            }
-        } else {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(padding),
-                contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                items(tarefas, key = { it.id }) { tarefa ->
-                    TarefaItem(
-                        tarefa = tarefa,
-                        onCheckedChange = { concluida -> onCheckedChange(tarefa, concluida) },
-                        onEditar = { onEditarTarefa(tarefa.id) },
-                        onDeletar = { onDeletar(tarefa) }
+                FiltroListaTarefas.values().forEach { opcao ->
+                    FilterChip(
+                        selected = filtro == opcao,
+                        onClick = { filtro = opcao },
+                        label = {
+                            Text(
+                                text = when (opcao) {
+                                    FiltroListaTarefas.TODAS -> "Todas"
+                                    FiltroListaTarefas.PENDENTES -> "Pendentes"
+                                    FiltroListaTarefas.CONCLUIDAS -> "Concluídas"
+                                }
+                            )
+                        }
                     )
+                }
+            }
+
+            if (tarefasFiltradas.isEmpty()) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text("Nenhuma tarefa cadastrada neste filtro.")
+                }
+            } else {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(tarefasFiltradas, key = { it.id }) { tarefa ->
+                        TarefaItem(
+                            tarefa = tarefa,
+                            onCheckedChange = { concluida -> onCheckedChange(tarefa, concluida) },
+                            onEditar = { onEditarTarefa(tarefa.id) },
+                            onDeletar = { onDeletar(tarefa) }
+                        )
+                    }
                 }
             }
         }

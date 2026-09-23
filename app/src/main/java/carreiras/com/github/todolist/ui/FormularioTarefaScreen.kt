@@ -14,6 +14,7 @@ import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -98,6 +99,9 @@ fun FormularioTarefaContent(
     var mostrarSeletorData by remember { mutableStateOf(false) }
     var mostrarSeletorHora by remember { mutableStateOf(false) }
 
+    val tituloValido = titulo.isNotBlank()
+    val prazoValido = !temDataHora || (ano != null && mes != null && dia != null && hora != null && minuto != null)
+
     if (mostrarSeletorData) {
         val estadoDatePicker = rememberDatePickerState(
             initialSelectedDateMillis = if (ano != null) paraMillisUtcDoDatePicker(ano!!, mes!!, dia!!) else null
@@ -177,21 +181,51 @@ fun FormularioTarefaContent(
                 onValueChange = { titulo = it },
                 label = { Text("Título") },
                 modifier = Modifier.fillMaxWidth(),
-                singleLine = true
+                singleLine = true,
+                trailingIcon = {
+                    if (titulo.isNotBlank()) {
+                        IconButton(onClick = { titulo = "" }) {
+                            Icon(Icons.Default.Close, contentDescription = "Limpar título")
+                        }
+                    }
+                }
             )
+            if (!tituloValido) {
+                Text(
+                    text = "Informe um título antes de salvar.",
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
             OutlinedTextField(
                 value = descricao,
                 onValueChange = { descricao = it },
                 label = { Text("Descrição") },
                 modifier = Modifier.fillMaxWidth(),
-                minLines = 3
+                minLines = 3,
+                trailingIcon = {
+                    if (descricao.isNotBlank()) {
+                        IconButton(onClick = { descricao = "" }) {
+                            Icon(Icons.Default.Close, contentDescription = "Limpar descrição")
+                        }
+                    }
+                }
+            )
+            Text(
+                text = "${descricao.length} caracteres",
+                modifier = Modifier.align(Alignment.End),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text("Definir data e horário", modifier = Modifier.weight(1f))
-                Switch(checked = temDataHora, onCheckedChange = { temDataHora = it })
+                Switch(
+                    checked = temDataHora,
+                    onCheckedChange = { temDataHora = it }
+                )
             }
             if (temDataHora) {
                 Row(
@@ -218,6 +252,13 @@ fun FormularioTarefaContent(
                     }
                 }
             }
+            if (temDataHora && !prazoValido) {
+                Text(
+                    text = "Selecione a data e a hora antes de salvar.",
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
             Button(
                 onClick = {
                     val dataHora = if (temDataHora) {
@@ -228,7 +269,7 @@ fun FormularioTarefaContent(
                     onSalvar(titulo.trim(), descricao.trim(), dataHora)
                 },
                 modifier = Modifier.fillMaxWidth(),
-                enabled = titulo.isNotBlank() && (!temDataHora || (ano != null && hora != null))
+                enabled = tituloValido && prazoValido
             ) {
                 Text("Salvar")
             }

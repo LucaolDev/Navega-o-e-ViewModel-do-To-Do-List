@@ -237,6 +237,13 @@ fun FormularioTarefaContent(
                     }
                 )
             }
+            if (!temDataHora) {
+                Text(
+                    text = "Sem prazo definido",
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
             if (temDataHora) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),

@@ -234,7 +234,19 @@ fun ListaTarefasContent(
                         .fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text("Nenhuma tarefa cadastrada neste filtro.")
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                        modifier = Modifier.padding(24.dp)
+                    ) {
+                        Text("Nenhuma tarefa cadastrada neste filtro.")
+                        Button(
+                            onClick = onNovaTarefa,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text("Criar tarefa")
+                        }
+                    }
                 }
             } else {
                 LazyColumn(

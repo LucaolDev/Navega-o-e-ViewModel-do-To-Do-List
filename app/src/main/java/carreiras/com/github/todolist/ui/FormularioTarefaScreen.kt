@@ -8,13 +8,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -224,7 +225,16 @@ fun FormularioTarefaContent(
                 Text("Definir data e horário", modifier = Modifier.weight(1f))
                 Switch(
                     checked = temDataHora,
-                    onCheckedChange = { temDataHora = it }
+                    onCheckedChange = {
+                        temDataHora = it
+                        if (!it) {
+                            ano = null
+                            mes = null
+                            dia = null
+                            hora = null
+                            minuto = null
+                        }
+                    }
                 )
             }
             if (temDataHora) {

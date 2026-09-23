@@ -292,7 +292,13 @@ private fun TarefaItem(
                         overflow = TextOverflow.Ellipsis
                     )
                 }
-                if (tarefa.dataHora != null) {
+                if (tarefa.dataHora == null) {
+                    Text(
+                        text = "Sem prazo",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                } else {
                     val atrasada = tarefaAtrasada(tarefa.dataHora, tarefa.concluida)
                     val status = statusPrazo(tarefa.dataHora, tarefa.concluida)
 

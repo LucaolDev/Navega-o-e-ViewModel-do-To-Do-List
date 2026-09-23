@@ -15,7 +15,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -27,6 +29,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -84,6 +87,7 @@ fun ListaTarefasContent(
 ) {
     var filtro by remember { mutableStateOf(FiltroListaTarefas.TODAS) }
     var pesquisa by remember { mutableStateOf("") }
+    var tarefaParaExcluir by remember { mutableStateOf<Tarefa?>(null) }
     val tarefasFiltradas = remember(tarefas, filtro, pesquisa) {
         val base = when (filtro) {
             FiltroListaTarefas.TODAS -> tarefas
@@ -103,6 +107,27 @@ fun ListaTarefasContent(
     }
     val totalPendentes = tarefas.count { !it.concluida }
     val totalConcluidas = tarefas.count { it.concluida }
+
+    if (tarefaParaExcluir != null) {
+        AlertDialog(
+            onDismissRequest = { tarefaParaExcluir = null },
+            title = { Text("Excluir tarefa") },
+            text = { Text("Deseja realmente remover \"${tarefaParaExcluir!!.titulo}\"?") },
+            confirmButton = {
+                TextButton(onClick = {
+                    onDeletar(tarefaParaExcluir!!)
+                    tarefaParaExcluir = null
+                }) {
+                    Text("Excluir")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { tarefaParaExcluir = null }) {
+                    Text("Cancelar")
+                }
+            }
+        )
+    }
 
     Scaffold(
         topBar = {
@@ -132,7 +157,14 @@ fun ListaTarefasContent(
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 4.dp),
                 singleLine = true,
-                placeholder = { Text("Buscar tarefa") }
+                placeholder = { Text("Buscar tarefa") },
+                trailingIcon = {
+                    if (pesquisa.isNotBlank()) {
+                        IconButton(onClick = { pesquisa = "" }) {
+                            Icon(Icons.Default.Close, contentDescription = "Limpar busca")
+                        }
+                    }
+                }
             )
 
             Row(
@@ -178,7 +210,7 @@ fun ListaTarefasContent(
                             tarefa = tarefa,
                             onCheckedChange = { concluida -> onCheckedChange(tarefa, concluida) },
                             onEditar = { onEditarTarefa(tarefa.id) },
-                            onDeletar = { onDeletar(tarefa) }
+                            onDeletar = { tarefaParaExcluir = tarefa }
                         )
                     }
                 }

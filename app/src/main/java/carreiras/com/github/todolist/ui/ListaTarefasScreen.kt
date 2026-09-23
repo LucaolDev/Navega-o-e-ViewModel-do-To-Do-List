@@ -123,6 +123,7 @@ fun ListaTarefasContent(
     }
     val totalPendentes = tarefas.count { !it.concluida }
     val totalConcluidas = tarefas.count { it.concluida }
+    val filtrosAtivos = pesquisa.isNotBlank() || filtro != FiltroListaTarefas.TODAS || ordem != OrdemListaTarefas.PRAZO
 
     if (tarefaParaExcluir != null) {
         AlertDialog(
@@ -225,6 +226,20 @@ fun ListaTarefasContent(
                             )
                         }
                     )
+                }
+            }
+
+            if (filtrosAtivos) {
+                TextButton(
+                    onClick = {
+                        pesquisa = ""
+                        filtro = FiltroListaTarefas.TODAS
+                        ordem = OrdemListaTarefas.PRAZO
+                    },
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
+                ) {
+                    Text("Limpar filtros")
                 }
             }
 

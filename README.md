@@ -13,6 +13,7 @@ Aplicativo Android de lista de tarefas (to-do list) desenvolvido como projeto di
 - Criar, editar e excluir tarefas
 - Marcar tarefas como concluídas
 - Definir data e horário de prazo para uma tarefa
+- Buscar tarefas e filtrar a lista por status
 - Lista ordenada por prazo, com destaque visual para tarefas atrasadas
 - Persistência local dos dados (SQLite via Room) — as tarefas continuam disponíveis após fechar o app
 
@@ -87,10 +88,15 @@ O histórico de desenvolvimento do projeto foi preservado desde o primeiro commi
 
 As evidências da atividade devem ser organizadas em [docs/evidencias](docs/evidencias/README.md), incluindo as telas de listagem, cadastro, edição, conclusão, exclusão, navegação e a validação do build.
 
+```
 ## Autor
 
-Luca Oliveira
+LucaolDev
+```
 
+```
+docs: atualizar funcionalidades do README
+```
 ## Licença
 
 Este projeto é distribuído sob a licença MIT.

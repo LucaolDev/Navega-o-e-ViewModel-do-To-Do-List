@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import carreiras.com.github.todolist.data.Tarefa
 import carreiras.com.github.todolist.util.formatarDataHora
+import carreiras.com.github.todolist.util.statusPrazo
 import carreiras.com.github.todolist.util.tarefaAtrasada
 import carreiras.com.github.todolist.viewmodel.TarefaViewModel
 
@@ -201,6 +202,17 @@ private fun TarefaItem(
                 }
                 if (tarefa.dataHora != null) {
                     val atrasada = tarefaAtrasada(tarefa.dataHora, tarefa.concluida)
+                    val status = statusPrazo(tarefa.dataHora, tarefa.concluida)
+
+                    if (status != null) {
+                        Text(
+                            text = status,
+                            style = MaterialTheme.typography.labelMedium,
+                            color = if (atrasada) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
+
                     Text(
                         text = formatarDataHora(tarefa.dataHora),
                         style = MaterialTheme.typography.bodySmall,

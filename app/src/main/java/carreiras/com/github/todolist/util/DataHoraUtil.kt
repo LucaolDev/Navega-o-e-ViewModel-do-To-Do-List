@@ -39,3 +39,19 @@ fun combinarDataHora(ano: Int, mes: Int, dia: Int, hora: Int, minuto: Int): Long
 fun tarefaAtrasada(dataHora: Long?, concluida: Boolean, agora: Long = System.currentTimeMillis()): Boolean {
     return dataHora != null && !concluida && dataHora < agora
 }
+
+fun statusPrazo(dataHora: Long?, concluida: Boolean, agora: Long = System.currentTimeMillis()): String? {
+    if (dataHora == null || concluida) return null
+
+    val calendarioAgora = Calendar.getInstance().apply { timeInMillis = agora }
+    val calendarioPrazo = Calendar.getInstance().apply { timeInMillis = dataHora }
+
+    val mesmoDia = calendarioAgora.get(Calendar.YEAR) == calendarioPrazo.get(Calendar.YEAR) &&
+        calendarioAgora.get(Calendar.DAY_OF_YEAR) == calendarioPrazo.get(Calendar.DAY_OF_YEAR)
+
+    return when {
+        dataHora < agora -> "Atrasada"
+        mesmoDia -> "Vence hoje"
+        else -> null
+    }
+}
